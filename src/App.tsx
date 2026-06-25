@@ -5,6 +5,13 @@ function App() {
     <div>
       <ProductShowcase />
     </div>
+import Carousel from './components/Carousel/Carousel'
+
+function App() {
+  return (
+    <>
+      <Carousel />
+    </>
   )
 }
 
