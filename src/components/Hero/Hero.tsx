@@ -10,36 +10,20 @@ export default function Hero() {
   useEffect(() => {
     const tl = gsap.timeline({ delay: 0.3 })
 
-    tl.fromTo(
-      eyebrowRef.current,
+    tl.fromTo(eyebrowRef.current,
       { opacity: 0, y: 20 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-      }
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }
     )
-      .fromTo(
-        headlineRef.current,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: 'power3.out',
-        },
-        '-=0.4'
-      )
-      .fromTo(
-        buttonRef.current,
-        { opacity: 0 },
-        {
-          opacity: 1,
-          duration: 0.6,
-        },
-        '-=0.3'
-      )
+    .fromTo(headlineRef.current,
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 1, ease: 'power3.out' },
+      '-=0.4'
+    )
+    .fromTo(buttonRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.6 },
+      '-=0.3'
+    )
   }, [])
 
   return (
@@ -52,25 +36,12 @@ export default function Hero() {
         muted
         playsInline
       />
-
       <div className={styles.overlay}></div>
-
       <div className={styles.content}>
-        <p ref={eyebrowRef} className="eyebrow">
-          NEW COLLECTION
-        </p>
-
-        <h1 ref={headlineRef} className={styles.title}>
-          Crafted to Last a Lifetime.
-        </h1>
-
-        <button ref={buttonRef} className="btn-ghost">
-          Explore Now
-        </button>
-
-        <div className={styles.scrollIndicator}>
-          ↓
-        </div>
+        <p ref={eyebrowRef} className="eyebrow">NEW COLLECTION</p>
+        <h1 ref={headlineRef} className={styles.title}>Crafted to Last a Lifetime.</h1>
+        <button ref={buttonRef} className="btn-ghost">Explore Now</button>
+        <div className={styles.scrollIndicator}>↓</div>
       </div>
     </section>
   )

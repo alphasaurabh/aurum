@@ -15,10 +15,7 @@ export default function Nav() {
       setScrolled(currentScrollY > 80)
 
       // Hide when scrolling down past 300px
-      if (
-        currentScrollY > lastScrollY &&
-        currentScrollY > 300
-      ) {
+      if (currentScrollY > lastScrollY && currentScrollY > 300) {
         setHidden(true)
       } else {
         setHidden(false)
@@ -28,22 +25,13 @@ export default function Nav() {
     }
 
     window.addEventListener('scroll', handleScroll)
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
-    <nav
-      className={`${styles.nav}
-        ${scrolled ? styles.scrolled : ''}
-        ${hidden ? styles.hidden : ''}`}
-    >
+    <nav className={`${styles.nav} ${scrolled ? styles.scrolled : ''} ${hidden ? styles.hidden : ''}`}>
       <div className={`container ${styles.inner}`}>
-        <a href="/" className={styles.logo}>
-          AURUM
-        </a>
+        <a href="/" className={styles.logo}>AURUM</a>
 
         <div className={styles.links}>
           <a href="#">Rings</a>
