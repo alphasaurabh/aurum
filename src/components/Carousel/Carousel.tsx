@@ -35,40 +35,51 @@ const SLIDES: Slide[] = [
   },
 ]
 
-const SLIDE_GAP = 24
-
 export default function Carousel() {
   const trackRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
+  const isDraggingRef = useRef(false)
   const dragStart = useRef({ x: 0, scrollLeft: 0 })
 
   const handleScroll = useCallback(() => {
     const track = trackRef.current
     if (!track) return
-    const slideEl = track.querySelector<HTMLElement>(`.${styles.slide}`)
-    if (!slideEl) return
-    const slideWidth = slideEl.offsetWidth + SLIDE_GAP
-    const idx = Math.round(track.scrollLeft / slideWidth)
-    setActiveIndex(Math.max(0, Math.min(idx, SLIDES.length - 1)))
+    const slides = Array.from(track.querySelectorAll<HTMLElement>(`.${styles.slide}`))
+    if (slides.length === 0) return
+    // Active slide = the one whose centre is closest to the viewport centre
+    const viewportCenter = track.scrollLeft + track.clientWidth / 2
+    let closest = 0
+    let smallest = Infinity
+    slides.forEach((el, i) => {
+      const slideCenter = el.offsetLeft + el.offsetWidth / 2
+      const distance = Math.abs(slideCenter - viewportCenter)
+      if (distance < smallest) {
+        smallest = distance
+        closest = i
+      }
+    })
+    setActiveIndex(closest)
   }, [])
 
   const onMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const track = trackRef.current
     if (!track) return
+    isDraggingRef.current = true
     setIsDragging(true)
     dragStart.current = { x: e.clientX, scrollLeft: track.scrollLeft }
   }, [])
 
   const onMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragging) return
+    if (!isDraggingRef.current) return
     const track = trackRef.current
     if (!track) return
     const delta = (e.clientX - dragStart.current.x) * 2
     track.scrollLeft = dragStart.current.scrollLeft - delta
-  }, [isDragging])
+  }, [])
 
   const stopDrag = useCallback(() => {
+    isDraggingRef.current = false
     setIsDragging(false)
   }, [])
 
@@ -76,8 +87,8 @@ export default function Carousel() {
     <div className={styles.wrapper}>
       <div className={`container ${styles.header}`}>
         <div>
-          <p className="eyebrow">THE AURUM EDIT</p>
-          <h2 className="headline">A Story in Gold</h2>
+          <p className={styles.eyebrow}>THE AURUM EDIT</p>
+          <h2 className={styles.title}>A Story in Gold</h2>
         </div>
         <span className={styles.dragLabel}>&larr; Drag to Explore</span>
       </div>
@@ -91,8 +102,11 @@ export default function Carousel() {
         onMouseUp={stopDrag}
         onMouseLeave={stopDrag}
       >
-        {SLIDES.map((slide) => (
-          <div key={slide.id} className={styles.slide}>
+        {SLIDES.map((slide, i) => (
+          <div
+            key={slide.id}
+            className={`${styles.slide}${i === activeIndex ? "" : ` ${styles.dimmed}`}`}
+          >
             <img src={slide.imageUrl} alt={slide.name} className={styles.slideImage} draggable={false} />
             <div className={styles.slideOverlay} />
             <div className={styles.slideContent}>
